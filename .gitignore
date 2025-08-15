@@ -1,1 +1,5 @@
+.gitignore
 node_modules
+key.txt
+config.json
+.env
