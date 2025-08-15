@@ -1,0 +1,23 @@
+{
+  "name": "maga-bot",
+  "version": "1.0.0",
+  "description": "Este projeto é dedicado à estudo e criação de um bot para a plataforma Discord.",
+  "homepage": "https://github.com/Yurumee/maga-bot#readme",
+  "bugs": {
+    "url": "https://github.com/Yurumee/maga-bot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yurumee/maga-bot.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "discord.js": "^14.21.0"
+  }
+}
