@@ -1,6 +1,6 @@
 // constantes necessárias pro cliente
 // constantes pra flag de mensagem 
-const { Client, Events, GatewayIntentBits, Collection, MessageFlags } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Collection, MessageFlags, messageLink } = require('discord.js');
 const { token } = require('./config.json');
 // utilizado para ler a pasta commands e identificar comandos
 const fs = require('node:fs');
@@ -45,21 +45,56 @@ for(const pasta of commandFolders)
         else 
         {
             // senão, mostre a mensagem de erro
-            console.log(`[ERRO] o comando em ${caminhoArq} não pôde ser carregado. 'data' ou 'execute' inexistente!`)
+            console.log(`ERRO: O comando em ${caminhoArq} não pôde ser carregado. 'data' ou 'execute' inexistente!`)
         };
     };
 
 };
 
-// quando uma iteração for criada, chama esse evento
-cliente.on(Events.InteractionCreate, async iteration =>
+// quando uma interação for criada, chama esse evento
+cliente.on(Events.InteractionCreate, async interation =>
     {
         // se não for um comando de chat (slash), saia
-        if (!iteration.isChatInputCommand())
+        if (!interation.isChatInputCommand())
+        {
             return;
+        };
 
-        // se for, mostra a iteração
-        console.log(iteration)
+        // pega o comando correspondente da interação
+        const command = interation.cliente.commands.get(interation.commandName);
+        
+        // se o comando não existir
+        if (!command)
+        {
+            console.error(`ERRO: O comando ${interation.commandName} não existe.`);
+            return;
+        };
+
+        // caso exista, ele tenta chamar o metodo execute daquela interação
+        try
+        {
+            await command.execute(interation)
+        }
+        // em caso de falha, ele retorna um log de erro
+        catch (error)
+        {
+            console.error(`ERRO: ${error}`);
+            if (interation.replied || interation.deferred)
+            {
+                await interation.followUp({
+                                    content: 'Houve um erro executando este comando', 
+                                    flags: MessageFlags.Ephemeral
+                                    });
+            }
+            else
+            {
+                await interation.reply({
+                                    content: 'Houve um erro executando este comando',
+                                    flags: MessageFlags.Ephemeral
+                                    });
+            }
+
+        };
     });
 
 // o codigo a seguir será rodado APENAS uma vez
