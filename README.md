@@ -2,6 +2,8 @@
 
 Este projeto é dedicado à estudo e criação de um bot para a plataforma Discord.
 
+O projeto é feito com base [neste tutorial](https://discordjs.guide/#before-you-begin).
+
 ## Contato
 Para mais informações ou para entrar em contato com a desenvolvedora:
 
