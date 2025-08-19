@@ -61,7 +61,7 @@ cliente.on(Events.InteractionCreate, async interation =>
         };
 
         // pega o comando correspondente da interação
-        const command = interation.cliente.commands.get(interation.commandName);
+        const command = interation.client.commands.get(interation.commandName);
         
         // se o comando não existir
         if (!command)
