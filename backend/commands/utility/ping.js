@@ -8,6 +8,7 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     // fornece a definição do comando que vai ser registrado pelo discord
+    cooldown: 5,
     data: new SlashCommandBuilder()
         .setName('ping')
         .setDescription('retorna "Ouvindo!"'),

@@ -15,6 +15,7 @@ const cliente = new Client({ intents: [GatewayIntentBits.Guilds] });
 // Collection() extende a função nativa JS Map() e inclui coisas a mais
 // ela é usada para armazenar e recuperar comandos eficientemente para serem executados
 cliente.commands = new Collection();
+cliente.cooldowns = new Collection();
 
 // junta o nome do diretorio atual + o que vier entre aspas
 const folderPath = path.join(__dirname, 'commands');

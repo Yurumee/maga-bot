@@ -72,7 +72,7 @@ const rest = new REST().setToken(token);
             //                         (
             //                             Routes.applicationCommands(clientId),
             //                             { body: commands }
-            //                         )
+            //                         );
 
             console.log(`${commands.length} (/) comandos recarregados com sucesso`);
         }
