@@ -1,6 +1,6 @@
 // constantes necessárias pro cliente
 // constantes pra flag de mensagem 
-const { Client, Events, GatewayIntentBits, Collection, MessageFlags, messageLink } = require('discord.js');
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { token } = require('./config.json');
 // utilizado para ler a pasta commands e identificar comandos
 const fs = require('node:fs');
@@ -51,60 +51,48 @@ for(const pasta of commandFolders)
 
 };
 
-// quando uma interação for criada, chama esse evento
-cliente.on(Events.InteractionCreate, async interation =>
+// A LOGICA PARA CRIAÇÃO DE INTERAÇÕES FOI MOVIDA PARA INTERACTIONCREATE.JS
+
+// busca a pasta desejada, e busca arquivos entro dela que estejam terminados em .js
+const eventsPath = path.join(__dirname, 'events');
+const eventsFiles = fs.readFileSync(eventsPath).filter(file => file.endsWith('.js'));
+
+for(const file of eventsFiles)
+{
+    const caminhoArquivo = path.join(eventsPath, file);
+    const event = require(caminhoArquivo);
+
+    // os metodos .once e .on recebem dois argumentos
+    // o nome do evento e uma função callback
+    // nos arquivos dentro de "events" isso está como name e execute
+
+    // as funções callback são funções passadas dentro de outra função
+    // elas servem para completar ações ou rotinas
+    // no nosso caso, precisamos de uma função para executar apenas uma vez ou múltiplas vezes, 
+    // que então irá chamar as funções callback que irão executar a lógica propriamente dita
+
+    // a função callback recebe os argumentos por meio de ...args
+    // a sintaxe ... permite receber uma quantidade indefinida de argumentos 
+    // (e args é apenas o nome escolhido, poderia ser qualquer outro)
+    // funções diferentes terão uma quantidade de argumentos diferentes que não se dá para prever 
+    // portanto usa-se os ...
+    // args é um array de argumentos 
+    // (fonte: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters) 
+    if(event.once)
     {
-        // se não for um comando de chat (slash), saia
-        if (!interation.isChatInputCommand())
-        {
-            return;
-        };
-
-        // pega o comando correspondente da interação
-        const command = interation.client.commands.get(interation.commandName);
-        
-        // se o comando não existir
-        if (!command)
-        {
-            console.error(`ERRO: O comando ${interation.commandName} não existe.`);
-            return;
-        };
-
-        // caso exista, ele tenta chamar o metodo execute daquela interação
-        try
-        {
-            await command.execute(interation)
-        }
-        // em caso de falha, ele retorna um log de erro
-        catch (error)
-        {
-            console.error(`ERRO: ${error}`);
-            if (interation.replied || interation.deferred)
-            {
-                await interation.followUp({
-                                    content: 'Houve um erro executando este comando', 
-                                    flags: MessageFlags.Ephemeral
-                                    });
-            }
-            else
-            {
-                await interation.reply({
-                                    content: 'Houve um erro executando este comando',
-                                    flags: MessageFlags.Ephemeral
-                                    });
-            }
-
-        };
-    });
-
-// o codigo a seguir será rodado APENAS uma vez
-// quando o evento CLIENT READY for acionado
-// The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
-// It makes some properties non-nullable.
-cliente.once(Events.ClientReady, clientePronto => 
+        // fora, ...args é um rest parameter
+        // dentro de execute() ...args é um spread syntax
+        // a diferença é que, dentro de execute(), ele irá permitir iteráveis (arrays, strings..) sejam expandidos para onde é necessário 0 ou muitos argumentos 
+        // (fonte: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+        cliente.once(event.name, (...args) => event.execute(...args));
+    }
+    else
     {
-        console.log(`Pronto! Loggado como: ${clientePronto.user.tag}`);
-    });
+        cliente.on(event.name, (...args) => event.execute(...args));
+    }
+}
+
+// A LOGICA PARA PREPARAR UM CLIENTE FOI MOVIDA PARA READY.JS
 
 // login no discord com o token do bot
 cliente.login(token);

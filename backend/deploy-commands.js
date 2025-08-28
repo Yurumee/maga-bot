@@ -67,6 +67,13 @@ const rest = new REST().setToken(token);
                                 { body: commands }
                             );
 
+            // DEPLOY GLOBAL
+            // const global_data = await rest.put
+            //                         (
+            //                             Routes.applicationCommands(clientId),
+            //                             { body: commands }
+            //                         )
+
             console.log(`${commands.length} (/) comandos recarregados com sucesso`);
         }
         catch (error)
