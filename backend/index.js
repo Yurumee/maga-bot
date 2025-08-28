@@ -55,7 +55,7 @@ for(const pasta of commandFolders)
 
 // busca a pasta desejada, e busca arquivos entro dela que estejam terminados em .js
 const eventsPath = path.join(__dirname, 'events');
-const eventsFiles = fs.readFileSync(eventsPath).filter(file => file.endsWith('.js'));
+const eventsFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
 for(const file of eventsFiles)
 {
